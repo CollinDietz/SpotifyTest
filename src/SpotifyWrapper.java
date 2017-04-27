@@ -157,13 +157,41 @@ public class SpotifyWrapper {
         return stringResults;
     }
 
-    public Artist makeArtist(MusicObject m)
-    {
-        return makeArtist(m.getId());
-    }
+    public Artist makeArtist(MusicObject m) {
+        ArrayList<Album> discography = new ArrayList<>();
+        URI uri = null;
+        try {
+            uri = new URIBuilder()
+                    .setScheme("https")
+                    .setHost("api.spotify.com")
+                    .setPath("/v1/artists/" + m.getId() + "/albums")
+                    .setParameter("market", "US")
+                    .setParameter("limit", "50")
+                    .build();
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
 
-    public Artist makeArtist(String id)
-    {
+        String next = "";
+        do {
+            JSONObject result = executeGet(uri);
+            JSONArray albums = result.getJSONArray("items");
+            next = result.getString("next");
+
+            try {
+                uri = new URI(next);
+            } catch (Exception e) {
+                e.printStackTrace();
+            }
+
+            for (int i = 0; i < albums.length(); i++) {
+                discography.add(makeAlbum(albums.getJSONObject(i).getString("id")));
+            }
+
+
+        } while (next != "null");
+
+        return new Artist()
     }
 
     public Album makeAlbum(String id)

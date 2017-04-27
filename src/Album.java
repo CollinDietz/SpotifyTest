@@ -4,5 +4,5 @@
 public class Album extends MusicObject {
 
     private Track[] trackList;
-    private Artist[] artists;
+    private Artist artist;
 }

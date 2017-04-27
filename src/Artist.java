@@ -1,16 +1,19 @@
 import org.json.JSONArray;
 import org.json.JSONObject;
 
+import java.util.ArrayList;
+
 /**
  * Created by Collin on 4/24/2017.
  */
 public class Artist extends MusicObject{
 
     private String[] genres;
-    private Album[] discography;
+    private ArrayList<Album> discography;
 
-    public Artist(String id, String name, String[] imgURL) {
+    public Artist(String id, String name, String[] imgURL, ArrayList<Album> disc) {
         super(id, name, imgURL);
+        discography = disc;
     }
 
     public Artist(JSONObject object)
