@@ -27,5 +27,15 @@ public class Artist extends MusicObject{
 
     }
 
+    public void print()
+    {
+        System.out.println("Name: " + this.getName());
+        for(int i = 0; i < discography.size(); i++)
+        {
+            discography.get(i).print();
+        }
+    }
+
+
 
 }

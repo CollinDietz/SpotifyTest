@@ -24,27 +24,31 @@ public class Main {
 
         //Search the artist
         ArrayList<MusicObject>  artists =  api.search(query, SpotifyWrapper.SearchType.ARTIST);
-        Artist one;
+        //selection loop
+        Artist one = null;
         boolean isCorrect = false;
         for(int i = 0; i < artists.size(); i++)
         {
             System.out.println("Is this the artist you were talking about?");
-            System.out.print(artists.get(i).getName() + "\t" + artists.get(i).getImgURLs(MusicObject.Size.LARGE) + "\t"
+            System.out.println(artists.get(i).getName() + "\t" + artists.get(i).getImgURLs(MusicObject.Size.LARGE) + "\t"
                     + artists.get(i).getId());
-            boolean isValid = false;
-            while (!isValid)
+
+            String response = input.next();
+            if(response.equals("yes"))
             {
-                String response = input.next();
-                if(response == "y" || response == "n")
-                {
-                    isValid = true;
-                }
-                else
-                {
-                    System.out.println("That is not a valid response. Enter y or n");
-                }
+                one = api.makeArtist(artists.get(i));
+                break;
             }
-            //one = api.makeArtist(artists.get(i));
+            else if(response.equals("no"))
+            {
+                continue;
+            }
+            else
+            {
+                System.out.println("That is not a valid response. Enter y or n");
+            }
         }
+
+        one.print();
     }
 }

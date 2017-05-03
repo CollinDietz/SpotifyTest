@@ -13,6 +13,7 @@ import javax.swing.text.html.parser.Entity;
 import java.net.URI;
 import java.util.ArrayList;
 import java.util.Base64;
+import java.util.StringJoiner;
 
 /**
  * Created by Collin on 4/19/2017.
@@ -176,7 +177,7 @@ public class SpotifyWrapper {
         do {
             JSONObject result = executeGet(uri);
             JSONArray albums = result.getJSONArray("items");
-            next = result.getString("next");
+            //next = result.getString("next");
 
             try {
                 uri = new URI(next);
@@ -185,24 +186,51 @@ public class SpotifyWrapper {
             }
 
             for (int i = 0; i < albums.length(); i++) {
-                discography.add(makeAlbum(albums.getJSONObject(i).getString("id")));
+                discography.add(makeAlbum(albums.getJSONObject(i).getString("id"), albums.getJSONObject(i).getString("name")));
             }
 
 
-        } while (next != "null");
+        } while (next != "");
 
-        return new Artist()
+        return new Artist(m.getId(), m.getName(), new String[3], discography);
     }
 
-    public Album makeAlbum(String id)
+    public Album makeAlbum(String id, String name)
     {
+        ArrayList<Track> trackList = new ArrayList<>();
+        URI uri = null;
+        try{
+            uri = new URIBuilder()
+                    .setScheme("https")
+                    .setHost("api.spotify.com")
+                    .setPath("/v1/albums/" + id)
+                    .build();
+
+        }
+        catch(Exception e) {
+            e.printStackTrace();
+        }
+
+        JSONObject result = executeGet(uri);
+        JSONObject tracks = result.getJSONObject("tracks");
+        JSONArray tracksList = tracks.getJSONArray("items");
+        for (int i = 0; i < tracksList.length(); i++)
+        {
+            JSONObject track = tracksList.getJSONObject(i);
+            String trackName = track.getString("name");
+            String trackId = track.getString("id");
+            int durr = track.getInt("duration_ms");
+            trackList.add(new Track(trackId, trackName, new String[3], durr, "",0));
+        }
+
+        return new Album(id, name, new String[3], trackList);
 
     }
 
-    public Track makeTrack(String id)
+/*    public Track makeTrack(String id)
     {
-
-    }
+        return new Track()
+    }*/
 
 
 
